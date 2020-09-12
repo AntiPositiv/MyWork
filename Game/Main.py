@@ -5,7 +5,7 @@ from Game.GameObj import Mob_1
 from Game import StartMenu
 from Game.Icons import Gold_label
 
-#################
+##################
 # RGB цвета
 Black = (0, 0, 0)
 White = (255, 255, 255)
@@ -28,13 +28,29 @@ SpawnTime = 17
 DamageMob = False
 ####################
 # Загрузка сохранения
-Gold = StartMenu.LoadSave()
+Gold, Attack, lvl = StartMenu.LoadSave()
 ###########
 # Счетчик золота
 txt_gold = pygame.font.SysFont('vladimirscript', 32)
 Gold_label.gold(Gold, txt_gold, screen_1, White)
 ###########
-
+# Апгрейды
+wind_button_up = pygame.Surface([100,50])
+wind_button_up.fill((255,255,255))
+pygame.draw.rect(wind_button_up,White,[650,50,100,50])
+screen_1.blit(wind_button_up,(650,50))
+def Attack_Up(gold,lvl):
+    cost = int(10 * lvl)
+    if cost > gold:
+        print("Недостаточно денег")
+        attack_up = 0
+        cost = 0
+    else:
+        #придумать в дальнейшем формулу
+        attack_up = 1
+        lvl += 1
+        print('Upgrade')
+    return cost,attack_up,lvl
 ###########
 while True:
     # Спавн монстра
@@ -70,10 +86,15 @@ while True:
                         #######################
                         Gold += 1
                         Gold_label.gold(Gold, txt_gold, screen_1, White)
-
+                elif 650 <= event.pos[0] <= 750 and 50 <= event.pos[1] <= 100:
+                    #Тригер апгрейда
+                    buf_cost,buf_attack_up,lvl = Attack_Up(Gold,lvl)
+                    Gold -= buf_cost
+                    Attack += buf_attack_up
+                    Gold_label.gold(Gold, txt_gold, screen_1, White)
         if event.type == pygame.QUIT:
             # Сохранение игры
-            StartMenu.SaveRes(Gold)
+            StartMenu.SaveRes(Gold,Attack,lvl)
             exit()
 
     clock.tick(FPS)

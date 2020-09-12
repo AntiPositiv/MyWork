@@ -1,4 +1,5 @@
 from tkinter import *
+#
 class Block:
     def __init__(self,master):
         self.e_1 = Entry(master, width = 30)
